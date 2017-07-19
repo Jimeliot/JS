@@ -5,14 +5,17 @@ function saveBookmark(e) {
     var Name = document.getElementById("name").value;
     var Url = document.getElementById("url").value;
 
-    if(!formValidate(Name,Url))
-        {
-            return false;
-        }
+    if (!formValidate(Name, Url)) {
+        return false;
+    }
 
     var bookmark = {
         name: Name,
         url: Url
+    }
+
+    if (!duplicate(bookmark)) {
+        return false;
     }
 
     if (localStorage.getItem("bookmarks") === null) {
@@ -48,20 +51,20 @@ function fetchBookmarks() {
     var bookRender = document.getElementById('filed_items');
     bookRender.innerHTML = '';
     for (var i = 0; i < bookmarks.length; i++) {
-          var name = bookmarks[i].name;
-    var url = bookmarks[i].url;
-        bookRender.innerHTML += '<div class="well">'+'<h3>' + name + ' <a class="btn btn-success" target="_blank" href="' + url + '">visit</a>' + ' <button onclick="deleteBookmark(\''+url+'\')" class="btn btn-danger">Del</button>'+'</h3>'+'</div>';
+        var name = bookmarks[i].name;
+        var url = bookmarks[i].url;
+        bookRender.innerHTML += '<div class="well">' + '<h3>' + name + ' <a class="btn btn-success" target="_blank" href="' + url + '">visit</a>' + ' <button onclick="deleteBookmark(\'' + url + '\')" class="btn btn-danger">Del</button>' + '</h3>' + '</div>';
     }
 }
 
-function formValidate(Name,Url){
+function formValidate(Name, Url) {
 
-    if (!Name || !Url){
+    if (!Name || !Url) {
         alert('Please Enter All Details')
-        return false;       
+        return false;
     }
 
-    if (!Url.match(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/)){
+    if (!Url.match(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/)) {
         alert('Please Enter a valid URL');
         return false;
     }
@@ -69,6 +72,25 @@ function formValidate(Name,Url){
     return true;
 }
 
+function duplicate(favourite) {
+    var bookmark = JSON.parse(localStorage.getItem("bookmarks"));
+    for (var i = 0; i < bookmark.length; i++) {
+        if (favourite === bookmark[i]) {
+            alert("You have already bookmarked the site")
+            return false;
+        }
+        if (favourite.url === bookmark[i].url) {
+            alert("You have already bookmarked the site")
+            return false;
+        }
+        if (favourite.name === bookmark[i].name) {
+            alert("Please give a diffent name to the site")
+            return false;
+        }
+
+    }
+    return true;
+}
 /*
 function fetchBookmarks(){
   var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
