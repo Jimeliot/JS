@@ -13,20 +13,56 @@ function saveBookmark(e) {
     if (localStorage.getItem("bookmarks") === null) {
         var bookmarks = [];
         bookmarks.push(bookmark);
-        localStorage.setItem('bookmarks', JSON.stringify("bookmarks"));
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
     }
     else {
-        bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+        var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
         bookmarks.push(bookmark);
-        localStorage.setItem('bookmarks', JSON.stringify("bookmarks"));
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
     }
-console.log('bookmarks');
+    document.getElementById('myForm').reset();
+    fetchBookmarks();
     e.preventDefault();
 }
 
-function fetchBookmarks() {
-    var bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
-    var render=document.getElementById('filed_items');
-    render.innerHTML='bookmarks'; 
+function deleteBookmark(Url) {
+    var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+    for (var i = 0; i < bookmarks.length; i++) {
+        if (bookmarks[i].url == Url) {
+            bookmarks.splice(i, 1);
+        }
 
+    }
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+    fetchBookmarks();
 }
+
+function fetchBookmarks() {
+    var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+    var bookRender = document.getElementById('filed_items');
+    bookRender.innerHTML = '';
+    for (var i = 0; i < bookmarks.length; i++) {
+          var name = bookmarks[i].name;
+    var url = bookmarks[i].url;
+        bookRender.innerHTML += '<div class="well">'+'<h3>' + name + ' <a class="btn btn-success" target="_blank" href="' + url + '">visit</a>' + ' <button onclick="deleteBookmark(\''+url+'\')" class="btn btn-danger">Del</button>'+'</h3>'+'</div>';
+    }
+}
+
+/*
+function fetchBookmarks(){
+  var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+  var bookmarksResults = document.getElementById('bookmarksResults');
+  bookmarksResults.innerHTML = '';
+  for(var i = 0; i < bookmarks.length; i++){
+    var name = bookmarks[i].name;
+    var url = bookmarks[i].url;
+    bookmarksResults.innerHTML += '<div class="well">'+
+                                  '<h3>'+name+
+                                  ' <a class="btn btn-default" target="_blank" href="'+url+'">Visit</a> ' +
+                                  ' <a onclick="deleteBookmark(\''+url+'\')" class="btn btn-danger" href="#">Delete</a> ' +
+                                  '</h3>'+
+                                  '</div>';
+  }
+}
+*/
